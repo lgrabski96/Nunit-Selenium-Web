@@ -1,12 +1,16 @@
+using Nunit_Selenium_Web.CustomDrivers;
 using Nunit_Selenium_Web.Pages;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 
 namespace Nunit_Selenium_Web.Tests
 {
     public class BaseTest {
         private IWebDriver driver;
+        private ActionsDriver actionsDriver;
 
         private const string url = "https://www.saucedemo.com/";
 
@@ -16,8 +20,12 @@ namespace Nunit_Selenium_Web.Tests
         [SetUp]
         public void Setup()
         {
-            //Initialize Web Driver
+            //Initialize Drivers
             driver = new ChromeDriver();
+            //driver = new FirefoxDriver();
+            actionsDriver = new ActionsDriver(new Actions(driver));
+
+            driver.Manage().Window.Maximize();
 
             //Initite Pages
             loginPage = new LoginPage(driver);
@@ -28,6 +36,7 @@ namespace Nunit_Selenium_Web.Tests
         public void BasicTest()
         {
             driver.Navigate().GoToUrl(url);
+            
 
             loginPage.Login("standard_user", "secret_sauce");
             loginPage.LoginButtonClick();
@@ -39,7 +48,6 @@ namespace Nunit_Selenium_Web.Tests
             //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
 
             //TearDown();
-
             //Assert.Pass();
         }
 
@@ -90,6 +98,25 @@ namespace Nunit_Selenium_Web.Tests
 
             //Assert
             Assert.That(loginPage.ErrorMessage.Text, Is.EqualTo("Epic sadface: Username and password do not match any user in this service"));
+        }
+
+        [Test]
+        public void Login_AsStandardUser_ScrollToBottomOfInventoryPage()
+        {
+            //Arrange
+            LoginPage loginPage = new LoginPage(driver);
+            InventoryPage inventoryPage = new InventoryPage(driver);
+
+            //Act
+            driver.Navigate().GoToUrl(url);
+
+            loginPage.Login("standard_user", "secret_sauce");
+            loginPage.LoginButtonClick();
+
+            actionsDriver.scrollToElement(inventoryPage.FooterTextElement);
+
+            //Assert
+            WebDriverWait.Equals(inventoryPage.IsFooterTextElementDisplayed, true);
         }
 
         [TearDown] public void TearDown()

@@ -1,10 +1,5 @@
 ﻿using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Nunit_Selenium_Web.Pages
 {
@@ -21,8 +16,6 @@ namespace Nunit_Selenium_Web.Pages
 
         private IWebElement inventoryContainer => driver.FindElement(By.Id("inventory_container"));
         public bool HasInventoryContainer => inventoryContainer.Displayed;
-
-
 
         private IWebElement productSortContainer => driver.FindElement(By.ClassName("product_sort_container"));
 
@@ -49,6 +42,8 @@ namespace Nunit_Selenium_Web.Pages
 
         public IEnumerable<decimal> inventoryItemPrices => inventoryItems.Select(item => item.Price);
 
+        public IWebElement FooterTextElement => driver.FindElement(By.ClassName("footer_copy"));
+        public bool IsFooterTextElementDisplayed => FooterTextElement.Displayed;
     }
 
     public class InventoryItem
