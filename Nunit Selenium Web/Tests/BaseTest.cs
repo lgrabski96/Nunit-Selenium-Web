@@ -36,19 +36,17 @@ namespace Nunit_Selenium_Web.Tests
         public void BasicTest()
         {
             driver.Navigate().GoToUrl(url);
-            
 
             loginPage.Login("standard_user", "secret_sauce");
             loginPage.LoginButtonClick();
 
+            //Explicit wait for title element
             WebDriverWait.Equals(inventoryPage.IsTitleDisplayed, true);
+
+            //Implicit wait for 2 seconds
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+
             Assert.True(inventoryPage.IsTitleDisplayed);
-
-            //WebDriverWait.Equals(driver.FindElement(inventoryPage.ProductsTitleElement);
-            //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-
-            //TearDown();
-            //Assert.Pass();
         }
 
         [Test]
